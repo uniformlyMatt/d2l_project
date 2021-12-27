@@ -13,6 +13,9 @@ def get_heading(df: pd.DataFrame, cols=None):
         :returns: df with 'heading' column added
     """
 
+    # change missing entries to empty strings
+    df[cols] = df[cols].fillna('')
+
     df['heading'] = df[cols].agg('-'.join, axis=1)
 
     return df
@@ -22,12 +25,9 @@ def run(path: str) -> int:
     """ Accepts a Microsoft Excel file path and builds pandas DataFrame with the 'heading' column """
 
     df = pd.read_excel(path)
-    print(df.columns)
 
     df = get_heading(df, cols=['Degree Plan Code', 'Person First Name'])
-
-    df.info()
-    df.head()
+    print(df['heading'].head())
 
     return 0
 
