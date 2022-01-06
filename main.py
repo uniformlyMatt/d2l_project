@@ -1,4 +1,5 @@
 import pandas as pd
+import interface
 
 
 def get_heading(df: pd.DataFrame, cols=None):
@@ -33,6 +34,7 @@ def run(path: str) -> int:
 
 
 if __name__ == '__main__':
-    filepath = '~/Downloads/mtst.xlsx'
+    with interface.select_file() as file:
+        print(file)
 
-    run(filepath)
+    # run(filepath)
