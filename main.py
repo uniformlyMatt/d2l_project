@@ -36,7 +36,7 @@ def run(path: str) -> int:
 
 
 if __name__ == '__main__':
-    filepath = interface.select_file()
+    filepath = interface.run_all()
 
     run(filepath)
 
