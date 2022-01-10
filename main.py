@@ -30,11 +30,17 @@ def run(path: str) -> int:
     df = get_heading(df, cols=['Degree Plan Code', 'Person First Name'])
     print(df['heading'].head())
 
+    # do the XML/HTML creation here
+
     return 0
 
 
 if __name__ == '__main__':
-    with interface.select_file() as file:
-        print(file)
+    filepath = interface.select_file()
+
+    run(filepath)
+
+    # with interface.select_file() as file:
+    #     print(file)
 
     # run(filepath)
