@@ -1,7 +1,8 @@
 import pandas as pd
 import interface
+import discussions as disc
 
 if __name__ == '__main__':
-    filepath = interface.main_loop()
+    filepath, grad_program = interface.main_loop()
 
-    interface.make_discussions(filepath)
+    disc.make_discussions(filepath, grad_program)

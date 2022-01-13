@@ -53,47 +53,6 @@ def get_spreadsheet(program: str) -> str:
         subprograms = eg.multchoicebox(msg=msg, title=title, choices=mult_choices)
 
 
-def get_heading(df: pd.DataFrame, cols=None):
-    """ Accepts a pandas DataFrame and list of columns
-        and creates a new 'heading' column.
-
-        :df:
-            pandas DataFrame
-        :cols:
-            list of columns used to make the 'heading'
-
-        :returns: df with 'heading' column added
-    """
-
-    # change missing entries to empty strings
-    df[cols] = df[cols].fillna('')
-
-    df['heading'] = df[cols].agg('-'.join, axis=1)
-
-    return df
-
-
-def make_discussions(path: str, program_name: str) -> int:
-    """ Accepts a Microsoft Excel file path, builds pandas DataFrame with the 'heading' column,
-        and creates the corresponding XML/HTML files for the D2L Discussions.
-    """
-
-    df = pd.read_excel(path)
-
-    if program_name == 'PHAS':
-        cols = ''
-
-    elif program_name == 'MTST':
-        cols = ''
-
-    df = get_heading(df, cols=cols)
-    print(df['heading'].head())
-
-    # do the XML/HTML creation here
-
-    return 0
-
-
 def splash_box():
     """ Uses a ccbox to proceed with the creation of Discussions for D2L applications """
     msg = """  This tool will help you create the necessary XML/HTML files\n
@@ -108,7 +67,7 @@ for which you will upload applications. """
         file_path = get_spreadsheet(grad_program)
 
         if file_path:
-            return file_path
+            return file_path, grad_program
         else:
             sys.exit(0)
 
@@ -121,7 +80,7 @@ def main_loop():
 
     while True:
         try:
-            file_path = splash_box()
-            return file_path
+            file_path, program = splash_box()
+            return file_path, program
         except RuntimeError:  # this happens when the user cancels the program_select dialog
             continue
