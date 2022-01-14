@@ -1,0 +1,18 @@
+Field,Application column
+first_name,Person First Name
+last_name,Person Last Name
+student_number,Student ID
+acad_program,Acad Prog Code
+acad_plan,Academic Plan 1 Code
+country,Country
+residency,Residency
+combined_program,Are you applying to a combined program? (Example: MBA/JD) If yes, specify which program. 
+advanced_credit, Are you looking for advanced credit? If yes, please list the courses you wish to receive credit for.  
+research_areas,research areas
+statement,Statement
+gpa_etc,GPA etc.
+awards,Awards
+financial_support,Financial support
+job_experience,Jobs
+publications,Publications
+other,Other

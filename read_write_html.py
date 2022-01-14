@@ -9,6 +9,7 @@ def get_data(row,  key, application_data):
     else:
         return data
 
+
 def write_html(row, application_data, year, foldername, write=False):
     
     f = open('template.html', 'r')

@@ -1,4 +1,5 @@
 import pandas as pd
+import shutil
 
 
 def get_heading(df: pd.DataFrame, cols=None):
@@ -28,17 +29,33 @@ def make_discussions(path: str, program_name: str) -> int:
 
     df = pd.read_excel(path)
 
-    if program_name == 'PHAS':
-        # select the columns for PHAS program application discussions
-        cols = ''
+    # the data from these columns will replace the corresponding fields in 'DiscussionTemplate.txt'
+    cols = ['Person First Name', 'Person Last Name', 'Acad Prog Code', 'Academic Plan 1 Code']
+    fields = ['FirstName', 'LastName', 'StudentNumber', 'AcadProgram', 'AcademicPlan']
+    html_save_name = ''
 
-    else:
-        # select the columns for MTST subprograms application discussions
-        cols = ''
+    # if program_name == 'PHAS':
+    #     # select the columns for PHAS program application discussions
+    #     fields = ['Person First Name', 'Person Last Name', 'Student ID', 'Academic Plan 1 Code']
+    #
+    # else:
+    #     # select the columns for MTST subprograms application discussions
+    #     fields = ''
 
     df = get_heading(df, cols=cols)
-    print(df['heading'].head())
 
-    # do the XML/HTML creation here
+    # convert student number to string
+    df['Student ID'] = df['Student ID'].apply(str)
 
+    # create a new column of discussion topics for all students
+    with open('DiscussionTemplate.txt', 'r') as single_topic:
+        df['discussion_topic'] = single_topic.read()
+
+    print(df)
+
+    # replace the fields in the discussion topic column with the corresponding student data
+    for col, field in zip(cols, fields):
+        df['discussion_topic'] = df.apply(lambda x: x['discussion_topic'].replace(field, x[col]))
+
+    print(df)
     return 0
