@@ -4,10 +4,10 @@
         <imsmd:lom>
             <imsmd:general>
                 <imsmd:title>
-                    <imsmd:langstring xml:lang="en-ca">PHAS Graduate Applications</imsmd:langstring>
+                    <imsmd:langstring xml:lang="en-ca">PROGRAMHEADING</imsmd:langstring>
                 </imsmd:title>
                 <imsmd:keyword>
-                    <imsmd:langstring xml:lang="en-ca">F2021SCIE_GRADUATE_APPS</imsmd:langstring>
+                    <imsmd:langstring xml:lang="en-ca">FYEARSCIE_GRADUATE_APPS</imsmd:langstring>
                 </imsmd:keyword>
                 <imsmd:language>en-ca</imsmd:language>
             </imsmd:general>

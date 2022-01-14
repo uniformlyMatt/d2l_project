@@ -2,16 +2,19 @@ import pandas as pd
 import interface
 import os
 import discussions as disc
+import utils
+import shutil
 
 if __name__ == '__main__':
-    html_fields_template_path = 'templates/html_fields.csv'
-
-    # disc.build_html_template(html_fields_template_path)
-
     filepath, grad_program = interface.main_loop()
 
-    # create temporary folder to gather all discussion files
-    os.mkdir('temp_folder')
+    # TODO: allow year selection
+    # create course manifest and course image XML files
+    utils.create_manifest(grad_program, year='2022')
+    utils.create_course_image()
 
-    # create the individual html files for each student
-    disc.make_discussions(filepath, grad_program)
+    # create the individual XML discussions for each student
+    df = disc.make_discussions(filepath, grad_program)
+
+    # create the D2L forum XML document
+    disc.make_forum(df, year_of_application=2022, program=grad_program)
