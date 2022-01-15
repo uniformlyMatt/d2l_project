@@ -5,35 +5,37 @@ import csv
 import re
 
 
-def get_heading(df: pd.DataFrame, cols=None):
-    """ Accepts a pandas DataFrame and list of columns
-        and creates a new 'heading' column.
-
-        :df:
-            pandas DataFrame
-        :cols:
-            list of columns used to make the 'heading'
-
-        :returns: df with 'heading' column added
-    """
-
-    # change missing entries to empty strings
-    df[cols] = df[cols].fillna('')
-
-    df['heading'] = df[cols].agg('-'.join, axis=1)
-
-    return df
-
-
 def write_html(df: pd.DataFrame):
     """ Accepts a pandas DataFrame and writes an html file """
 
     # open the html template
     with open('templates/template.html', 'r') as html_file:
-        HTML = html_file.read()
+        html = html_file.read()
+
+    # get the application fields from the html_fields.csv template
+    with open('templates/html_fields.csv', 'r') as csvfile:
+        fields = dict(list(csv.DictReader(csvfile))[0])
+
+    # create a filename column, replacing spaces with empty strings
+    df['html_filename'] = df['first_name'].str.replace(' ', '') + df['last_name'].str.replace(' ', '') + df[
+        'student_number'] + '.html'
 
     # create column to store individual html markup
-    df['html'] = HTML
+    df['html'] = html
+
+    # replace the fields in the html column with the corresponding student data
+    for field in fields.values():
+        df['html'] = df.apply(lambda x: x['html'].replace(field, x[field]), axis=1)
+
+    # write the html files for each student
+    def save_html(filename: str, htmlfile: str):
+        """ Accepts a filename and write htmlfile to it. """
+        with open('temp_folder/{}'.format(filename), 'w') as file:
+            file.write(htmlfile)
+
+    df.apply(lambda x: save_html(x['html_filename'], x['html']), axis=1)
+
+    return 0
 
 
 def make_discussions(path: str, program_name: str) -> pd.DataFrame:
@@ -85,10 +87,6 @@ def make_discussions(path: str, program_name: str) -> pd.DataFrame:
         text = single_topic.read()
     df['discussion_topic'] = text
 
-    # create a filename column, replacing spaces with empty strings
-    df['html_filename'] = df['first_name'].str.replace(' ', '') + df['last_name'].str.replace(' ', '') + df[
-        'student_number'] + '.html'
-
     # replace the FILENAME in the discussion with the 'html_filename' values
     df['discussion_topic'] = df.apply(lambda x: x['discussion_topic'].replace('FILENAME', x['html_filename']), axis=1)
 
@@ -102,7 +100,7 @@ def make_discussions(path: str, program_name: str) -> pd.DataFrame:
     return df
 
 
-def make_forum(df: pd.DataFrame, year_of_application: int, program: str):
+def make_forum(df: pd.DataFrame, year_of_application: str, program: str):
     """ Accepts a pandas DataFrame of student discussions and creates the D2L
         discussion forum object by filling in discussion_d2l_TemplateFile.txt
     """
@@ -112,9 +110,11 @@ def make_forum(df: pd.DataFrame, year_of_application: int, program: str):
 
     all_topics = ''.join(df['discussion_topic'].to_list())
     forum = forum.replace("InsertTopicHere", all_topics)
-    forum = forum.replace("TOPIC_TITLE", str(year_of_application) + " Applications")
+    forum = forum.replace("TOPIC_TITLE", year_of_application + " Applications")
 
-    with open('temp_folder/d2l_discussion_{}.xml'.format(program), 'w') as file:
+    print(program)
+
+    with open('temp_folder/discussion_d2l_1.xml', 'w') as file:
         file.write(forum)
 
     return 0

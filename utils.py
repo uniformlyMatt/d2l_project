@@ -31,6 +31,6 @@ def create_course_image():
     return 0
 
 
-def package_forum(save_dir: str):
+def zip_forum(save_name: str):
     """ Collects all created files in the temp folder and zips them together """
-    shutil.make_archive(save_dir, format='zip', )
+    shutil.make_archive(save_name, 'zip', 'temp_folder')
