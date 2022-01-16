@@ -1,3 +1,0 @@
-<discussion xmlns:d2l_2p0="http://desire2learn.com/xsd/d2lcp_v2p0"><forum id="1" resource_code="UCalgary-2643633"><properties><is_locked>False</is_locked><allow_anon>False</allow_anon><display_order>5</display_order><is_hidden>False</is_hidden><requires_approval>False</requires_approval><must_post_to_participate>False</must_post_to_participate><show_description_in_topics>False</show_description_in_topics></properties><content><title>TOPIC_TITLE</title></content><topics>
-InsertTopicHere
-</topics></forum></discussion>

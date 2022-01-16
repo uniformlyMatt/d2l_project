@@ -1,22 +1,9 @@
-import os
 import sys
-import platform
-import pandas as pd
 import easygui as eg
 from datetime import datetime
+import config
 
 current_year = datetime.now().year
-mtst_programs = pd.read_csv('mtst_programs.csv')
-current_os = platform.system()
-
-# change default file open directory depending on operating system
-if current_os == 'Windows':
-    default_dir = "C:\\Users\\%USERNAME%\\Documents\\{}*.xlsx"
-elif current_os == 'Linux':
-    current_user = os.getlogin()
-    default_dir = "/home/"+current_user+"/Documents/{}*.xlsx"
-else:
-    default_dir = "Documents/{}*.xlsx"
 
 
 def program_select():
@@ -60,27 +47,38 @@ def year_select():
             continue
 
 
-def get_spreadsheet(program: str) -> str:
+def get_spreadsheet(program: str):
     """ Accepts the program name as a string and searches for the corresponding Excel workbook """
     filetypes = [[".xls", ".xlsx", "Microsoft Excel workbooks"]]
 
     if program == 'PHAS':
         file = eg.fileopenbox(
-            default=default_dir.format(program),
+            default=config.default_dir.format(program),
             filetypes=filetypes
         )
 
         if file:
-            return file
+            return file, None
         else:  # if 'Cancel' is selected
             raise RuntimeError
     elif program == 'MTST':
         # select which MTST subprograms we are creating discussions for
-        mult_choices = mtst_programs['Program Name'].to_list()
+        mult_choices = config.mtst_programs['Program Name'].to_list()
         msg = 'Choose the MTST programs for which you would like to generate D2L Discussions:'
         title = "Choose MTST Programs"
         subprograms = eg.multchoicebox(msg=msg, title=title, choices=mult_choices)
-        # TODO: allow creation of application forums for MTST subprograms
+
+        # select the file containing all MTST applications
+        file = eg.fileopenbox(
+            default=config.default_dir.format(program),
+            filetypes=filetypes,
+            title='Select file containing all MTST applications'
+        )
+
+        if file:
+            return file, subprograms
+        else:  # if 'Cancel' is selected
+            raise RuntimeError
 
 
 def splash_box():
@@ -94,14 +92,16 @@ for which you will upload applications. """
     if eg.ccbox(msg, title):  # show a Continue/Cancel dialog
         # user chose Continue
         grad_program = program_select()
-        file_path = get_spreadsheet(grad_program)
+        file_path, subprograms = get_spreadsheet(grad_program)
 
-        if file_path:
-            return file_path, grad_program
+        if subprograms:
+            return file_path, grad_program, subprograms
+        elif file_path:
+            return file_path, grad_program, None
         else:
             sys.exit(0)
 
-    else:  # user chose Cancel
+    else:  # user chose 'Cancel'
         sys.exit(0)
 
 
@@ -110,7 +110,7 @@ def main_loop():
 
     while True:
         try:
-            file_path, program = splash_box()
-            return file_path, program
+            response = splash_box()
+            return response
         except RuntimeError:  # this happens when the user cancels the program_select dialog
             sys.exit(0)
