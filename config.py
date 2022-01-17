@@ -8,8 +8,8 @@ templates_folder = 'templates/{}'
 html_template = templates_folder.format('template.html')
 manifest_template = templates_folder.format('imsmanifest.xml')
 mtst_program_descriptions = templates_folder.format('mtst_programs.csv')
-discussion_template = templates_folder.format('DiscussionTemplate.txt')
-forum_template = templates_folder.format('D2LForumTemplate.txt')
+topic_template = templates_folder.format('DiscussionTemplate.txt')
+forum_template = templates_folder.format('ForumTemplate.txt')
 html_fields_template = templates_folder.format('html_fields.csv')
 course_image_template = templates_folder.format('courseimage_d2l.xml')
 

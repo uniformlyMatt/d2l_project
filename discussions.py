@@ -36,6 +36,20 @@ def write_html(df: pd.DataFrame, tempfolder: str):
     return 0
 
 
+def make_topics(topic_list: list):
+    """ Makes D2L Topics to be posted under a Forum """
+
+    with open(config.topic_template, 'r') as single_topic:
+        topic = single_topic.read()
+
+    # create one Topic for each item in topic_list
+    topics = [
+        topic.replace('TOPIC_ID_HERE', str(i)).replace('TOPIC_TITLE_HERE', tp) for i, tp in enumerate(topic_list)
+    ]
+
+    return ''.join(topics)
+
+
 def make_discussions(path: str, subprogram=None) -> pd.DataFrame:
     """ Accepts a Microsoft Excel file path, builds pandas DataFrame with the 'heading' column,
         and creates the corresponding XML/HTML files for the D2L Discussions.
@@ -82,7 +96,7 @@ def make_discussions(path: str, subprogram=None) -> pd.DataFrame:
     df['ID'] = df['ID'].apply(str)
 
     # create a new column of discussion topics for all students
-    with open(config.discussion_template, 'r') as single_topic:
+    with open(config.topic_template, 'r') as single_topic:
         text = single_topic.read()
     df['discussion_topic'] = text
 
@@ -98,22 +112,22 @@ def make_discussions(path: str, subprogram=None) -> pd.DataFrame:
         df['discussion_topic'] = df.apply(lambda x: x['discussion_topic'].replace(field, x[field]), axis=1)
 
     # replace the ID tag in the XML markup
-    df['discussion_topic'] = df.apply(lambda x: x['discussion_topic'].replace('IDnumberHERE', x['ID']), axis=1)
+    df['discussion_topic'] = df.apply(lambda x: x['discussion_topic'].replace('TOPIC_ID_HERE', x['ID']), axis=1)
 
     return df
 
 
-def make_forum(df: pd.DataFrame, year_of_application: str, tempfolder: str):
+def make_forum(all_topics: str, year_of_application: str, tempfolder: str, program_name: str):
     """ Accepts a pandas DataFrame of student discussions and creates the D2L
         discussion forum object by filling in discussion_d2l_TemplateFile.txt
     """
 
-    with open(config.forum_template, 'r') as all_students:
-        forum = all_students.read()
+    with open(config.forum_template, 'r') as forum_temp:
+        forum = forum_temp.read()
 
-    all_topics = ''.join(df['discussion_topic'].to_list())
-    forum = forum.replace("InsertTopicHere", all_topics)
-    forum = forum.replace("TOPIC_TITLE", year_of_application + " Applications")
+    # all_topics = ''.join(df['discussion_topic'].to_list())
+    forum = forum.replace("InsertTopicsHere", all_topics)
+    forum = forum.replace("FORUM_TITLE", year_of_application + ' ' + program_name)
 
     with open('{}/discussion_d2l_1.xml'.format(tempfolder), 'w') as file:
         file.write(forum)

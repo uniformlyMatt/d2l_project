@@ -43,3 +43,8 @@ def create_course_image(tempfolder: str):
 def zip_forum(save_name: str, tempfolder: str):
     """ Collects all created files in the temp folder and zips them together """
     shutil.make_archive(save_name, 'zip', tempfolder)
+
+
+def clear_temp(tempfolder: str):
+    """ Deletes the temporary folder and its contents """
+    shutil.rmtree(tempfolder)
